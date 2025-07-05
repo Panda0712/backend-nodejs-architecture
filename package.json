@@ -12,6 +12,12 @@
   "type": "commonjs",
   "description": "",
   "dependencies": {
+    "dotenv": "^17.0.1",
     "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "compression": "^1.8.0",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.0"
   }
 }
