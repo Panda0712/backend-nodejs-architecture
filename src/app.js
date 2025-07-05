@@ -13,6 +13,12 @@ app.use(morgan("dev"));
 app.use(helmet());
 // reduce bundle size of sending requests
 app.use(compression());
+app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 // app.use(morgan("combined"));
 // app.use(morgan("common"));
 // app.use(morgan("short"));
@@ -24,12 +30,21 @@ countConnect();
 // checkOverload();
 
 // init routes
-app.get("/", (req, res, next) => {
-  return res.status(200).json({
-    message: "Welcome to Backend NodeJS Architecture!",
-  });
-});
+app.use("/", require("./routes"));
 
 // handle error
+app.use((req, res, next) => {
+  const error = new Error("Not Found!");
+  error.status = 404;
+  next(error);
+});
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
+  return res.status(statusCode).json({
+    status: "error",
+    code: statusCode,
+    message: err.message || "Internal server error!",
+  });
+});
 
 module.exports = app;
