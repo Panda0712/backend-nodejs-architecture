@@ -7,9 +7,45 @@ const { SHOP_ROLES } = require("../utils/constants");
 const KeyTokenService = require("./keyToken.service");
 const { createTokenPair, createTokenPairV2 } = require("../utils/auth");
 const { getInfoData } = require("../utils/helpers");
-const { BadRequestError } = require("../utils/apiError");
+const { BadRequestError, AuthFailureError } = require("../utils/apiError");
+const { findByEmail } = require("./shop.service");
 
 class AuthService {
+  static login = async ({ email, password, refreshToken = null }) => {
+    const shop = await findByEmail({ email });
+    if (!shop) throw new BadRequestError("Shop not registered!");
+
+    const matchedPassword = await bcrypt.compare(password, shop.password);
+    if (!matchedPassword) throw new AuthFailureError("Authentication error!");
+
+    const publicKey = crypto.randomBytes(64).toString("hex");
+    const privateKey = crypto.randomBytes(64).toString("hex");
+
+    const tokens = await createTokenPairV2(
+      {
+        shopId: shop._id,
+        email,
+      },
+      publicKey,
+      privateKey
+    );
+
+    await KeyTokenService.createKeyTokenV2({
+      shopId: shop._id,
+      refreshToken: tokens.refreshToken,
+      publicKey,
+      privateKey,
+    });
+
+    return {
+      shop: getInfoData({
+        fields: ["email", "name", "_id"],
+        object: shop,
+      }),
+      tokens,
+    };
+  };
+
   static signUp = async ({ email, name, password }) => {
     try {
       // check user existence
