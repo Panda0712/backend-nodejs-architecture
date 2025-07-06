@@ -18,13 +18,40 @@ class KeyTokenService {
     }
   };
 
-  static createKeyTokenV2 = async ({ shopId, publicKey, privateKey }) => {
+  static createKeyTokenV2 = async ({
+    shopId,
+    publicKey,
+    privateKey,
+    refreshToken = null,
+  }) => {
     try {
-      const tokens = await keyTokenModelV2.create({
-        shop: shopId,
-        publicKey,
-        privateKey,
-      });
+      // level 0
+      // const tokens = await keyTokenModelV2.create({
+      //   shop: shopId,
+      //   publicKey,
+      //   privateKey,
+      // });
+
+      // level xxx
+      const filter = {
+          user: userId,
+        },
+        update = {
+          publicKey,
+          privateKey,
+          refreshTokensUsed: [],
+          refreshToken,
+        },
+        options = {
+          upsert: true,
+          new: true,
+        };
+
+      const tokens = await keyTokenModel.findOneAndUpdate(
+        filter,
+        update,
+        options
+      );
 
       return tokens ? tokens.publicKey : null;
     } catch (error) {
