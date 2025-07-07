@@ -1,6 +1,7 @@
 "use strict";
 
 const keyTokenModel = require("../models/keytoken.model");
+const { ObjectId } = require("mongodb");
 const keyTokenModelV2 = require("../models/keytokenv2.model");
 
 class KeyTokenService {
@@ -34,7 +35,7 @@ class KeyTokenService {
 
       // level xxx
       const filter = {
-          user: userId,
+          shop: shopId,
         },
         update = {
           publicKey,
@@ -57,6 +58,16 @@ class KeyTokenService {
     } catch (error) {
       return error;
     }
+  };
+
+  static findByShopId = async (shopId) => {
+    return await keyTokenModel
+      .findOne({ shop: new ObjectId(String(shopId)) })
+      .lean();
+  };
+
+  static removeKeyById = async (id) => {
+    return await keyTokenModel.deleteOne({ _id: new ObjectId(String(id)) });
   };
 }
 
