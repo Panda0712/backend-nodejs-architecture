@@ -17,6 +17,7 @@ const {
   ForbiddenError,
 } = require("../utils/apiError");
 const { findByEmail } = require("./shop.service");
+const keytokenModel = require("../models/keytoken.model");
 
 class AuthService {
   static handleRefreshToken = async (refreshToken) => {
@@ -58,14 +59,17 @@ class AuthService {
       holderToken.privateKey
     );
 
-    await holderToken.update({
-      $set: {
-        refreshToken: tokens.refreshToken,
-      },
-      $addToSet: {
-        refreshTokensUsed: refreshToken,
-      },
-    });
+    await keytokenModel.findOneAndUpdate(
+      { _id: holderToken._id },
+      {
+        $set: {
+          refreshToken: tokens.refreshToken,
+        },
+        $addToSet: {
+          refreshTokensUsed: refreshToken,
+        },
+      }
+    );
 
     return {
       shop: { shopId, email },
