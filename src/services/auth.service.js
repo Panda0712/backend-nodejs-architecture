@@ -11,6 +11,12 @@ const { BadRequestError, AuthFailureError } = require("../utils/apiError");
 const { findByEmail } = require("./shop.service");
 
 class AuthService {
+  static logout = async ({ keyStore }) => {
+    const delKey = await KeyTokenService.removeKeyById(keyStore._id);
+
+    return delKey;
+  };
+
   static login = async ({ email, password, refreshToken = null }) => {
     const shop = await findByEmail({ email });
     if (!shop) throw new BadRequestError("Shop not registered!");

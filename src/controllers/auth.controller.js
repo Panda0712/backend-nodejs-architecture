@@ -11,6 +11,13 @@ class AuthController {
     }).send(res);
   };
 
+  logout = async (req, res, next) => {
+    await AuthService.logout({ keyStore: req.keyStore });
+    new SuccessResponse({
+      message: "Logout successfully!",
+    }).send(res);
+  };
+
   signUp = async (req, res, next) => {
     const { email, name, password } = req.body;
     const newUser = await AuthService.signUp({ email, name, password });
