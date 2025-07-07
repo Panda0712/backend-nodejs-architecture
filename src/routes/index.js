@@ -6,6 +6,13 @@ const permission = require("../middlewares/permissionMiddleware");
 
 const router = express.Router();
 
+// test
+router.get("/", (req, res, next) => {
+  return res.status(200).json({
+    message: "Welcome to Backend NodeJS Architecture!",
+  });
+});
+
 // check api key
 router.use(apiKey);
 
@@ -13,10 +20,6 @@ router.use(apiKey);
 router.use(permission("0000"));
 
 router.use("/v1/api", require("./auth"));
-router.get("/", (req, res, next) => {
-  return res.status(200).json({
-    message: "Welcome to Backend NodeJS Architecture!",
-  });
-});
+router.use("/v1/api/product", require("./product"));
 
 module.exports = router;
