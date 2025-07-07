@@ -20,6 +20,4 @@ const permission = (permission) => {
   };
 };
 
-module.exports = {
-  permission,
-};
+module.exports = permission;

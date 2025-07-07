@@ -2,7 +2,6 @@
 
 const keyTokenModel = require("../models/keytoken.model");
 const { ObjectId } = require("mongodb");
-const keyTokenModelV2 = require("../models/keytokenv2.model");
 
 class KeyTokenService {
   static createKeyToken = async ({ shopId, publicKey }) => {

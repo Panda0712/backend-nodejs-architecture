@@ -24,6 +24,4 @@ const apiKey = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  apiKey,
-};
+module.exports = apiKey;
