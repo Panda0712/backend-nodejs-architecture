@@ -1,7 +1,8 @@
 "use strict";
 
 const express = require("express");
-const { apiKey, permission } = require("../utils/auth");
+const { apiKey } = require("../middlewares/apiKeyMiddleware");
+const { permission } = require("../middlewares/permissionMiddleware");
 
 const router = express.Router();
 
