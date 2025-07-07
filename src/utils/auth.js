@@ -59,7 +59,7 @@ const createTokenPairV2 = async (payload, publicKey, privateKey) => {
 };
 
 const verifyToken = async (token, keySecret) => {
-  return await JWT.verify(token, keySecret);
+  return JWT.verify(token, keySecret);
 };
 
 module.exports = {

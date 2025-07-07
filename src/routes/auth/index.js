@@ -3,7 +3,7 @@
 const express = require("express");
 const authController = require("../../controllers/auth.controller");
 const { asyncHandler } = require("../../helpers/asyncHandler");
-const { authentication } = require("../../middlewares/authMiddleware");
+const authentication = require("../../middlewares/authMiddleware");
 
 const router = express.Router();
 

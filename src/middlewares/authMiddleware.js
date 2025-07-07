@@ -32,6 +32,4 @@ const authentication = asyncHandler(async (req, res, next) => {
   }
 });
 
-module.exports = {
-  authentication,
-};
+module.exports = authentication;
