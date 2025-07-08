@@ -20,6 +20,48 @@ const { findByEmail } = require("./shop.service");
 const keytokenModel = require("../models/keytoken.model");
 
 class AuthService {
+  static handleRefreshTokenV2 = async ({ refreshToken, user, keyStore }) => {
+    const { shopId, email } = user;
+
+    if (keyStore.refreshTokensUsed.includes(refreshToken)) {
+      await KeyTokenService.deleteKeyById(shopId);
+      throw new ForbiddenError("Something wrong happened! Please login again!");
+    }
+
+    if (keyStore.refreshToken !== refreshToken) {
+      throw new AuthFailureError("Shop not registered!");
+    }
+
+    const foundShop = await findByEmail({ email });
+    if (!foundShop) throw new AuthFailureError("Shop not registered!");
+
+    const tokens = await createTokenPairV2(
+      {
+        shopId,
+        email,
+      },
+      keyStore.publicKey,
+      keyStore.privateKey
+    );
+
+    await keytokenModel.findOneAndUpdate(
+      { _id: keyStore._id },
+      {
+        $set: {
+          refreshToken: tokens.refreshToken,
+        },
+        $addToSet: {
+          refreshTokensUsed: refreshToken,
+        },
+      }
+    );
+
+    return {
+      shop: { shopId, email },
+      tokens,
+    };
+  };
+
   static handleRefreshToken = async (refreshToken) => {
     // check the token existence
     const foundToken = await KeyTokenService.findByRefreshTokenUsed(
