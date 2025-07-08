@@ -6,10 +6,20 @@ const AuthService = require("../services/auth.service");
 
 class AuthController {
   refreshToken = async (req, res, next) => {
-    const { refreshToken } = req.body;
+    // version 1
+    // const { refreshToken } = req.body;
+    // new SuccessResponse({
+    //   message: "Get token success!",
+    //   metadata: await AuthService.handleRefreshToken(refreshToken),
+    // }).send(res);
+
     new SuccessResponse({
       message: "Get token success!",
-      metadata: await AuthService.handleRefreshToken(refreshToken),
+      metadata: await AuthService.handleRefreshTokenV2({
+        refreshToken: req.refreshToken,
+        user: req.user,
+        keyStore: req.keyStore,
+      }),
     }).send(res);
   };
 
@@ -28,7 +38,7 @@ class AuthController {
 
   signUp = async (req, res, next) => {
     const { email, name, password } = req.body;
-    const newUser = await AuthService.signUp({ email, name, password });
+    const newUser = await AuthService.signUpV2({ email, name, password });
     new CREATED({
       message: "Registered successfully!",
       metadata: newUser,
