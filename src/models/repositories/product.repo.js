@@ -8,6 +8,7 @@ const {
 } = require("../../models/product.model");
 const { ObjectId } = require("mongodb");
 const { getSelectData, getUnselectedData } = require("../../utils/helpers");
+const { model } = require("mongoose");
 
 const findAllDraftsForShop = async ({ query, limit, skip }) => {
   return await queryProduct({ query, limit, skip });
@@ -116,6 +117,18 @@ const findProduct = async (id, unselect) => {
   return foundProduct;
 };
 
+const updateProductById = async (
+  productId,
+  updateData,
+  model,
+  isNew = true
+) => {
+  const updatedProduct = await model.findByIdAndUpdate(productId, updateData, {
+    new: isNew,
+  });
+  return updatedProduct;
+};
+
 module.exports = {
   findAllDraftsForShop,
   publishProductByShop,
@@ -124,4 +137,5 @@ module.exports = {
   searchProductByUser,
   findAllProducts,
   findProduct,
+  updateProductById,
 };
