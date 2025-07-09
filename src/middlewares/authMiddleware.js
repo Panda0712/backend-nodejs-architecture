@@ -49,6 +49,7 @@ const authenticationV2 = asyncHandler(async (req, res, next) => {
         throw new AuthFailureError("Invalid userId!");
       req.keyStore = keyStore;
       req.user = decodeUser;
+      console.log(req.user);
       req.refreshToken = refreshToken;
       return next();
     } catch (error) {
@@ -64,6 +65,7 @@ const authenticationV2 = asyncHandler(async (req, res, next) => {
     if (userId !== decodeUser.shopId)
       throw new AuthFailureError("Invalid ShopId!");
     req.keyStore = keyStore;
+    req.user = decodeUser;
     next();
   } catch (error) {
     throw error;
