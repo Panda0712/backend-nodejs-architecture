@@ -14,6 +14,20 @@ class ProductController {
     }).send(res);
   };
 
+  updateProduct = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Updated product successfully!",
+      metadata: await ProductService.updateProduct(
+        req.body.product_type,
+        req.params.productId,
+        {
+          ...req.body,
+          product_shop: req.user.shopId,
+        }
+      ),
+    }).send(res);
+  };
+
   /**
    * @desc get all drafts for shop
    * @param {Number} limit

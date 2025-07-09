@@ -24,6 +24,7 @@ router.post(
   "/:productId",
   asyncHandler(productController.publishedProductForShop)
 );
+router.patch("/:productId", asyncHandler(productController.updateProduct));
 router.post(
   "/unpublish/:productId",
   asyncHandler(productController.unpublishedProductForShop)
