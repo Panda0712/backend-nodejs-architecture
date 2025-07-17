@@ -8,7 +8,6 @@ const {
 } = require("../../models/product.model");
 const { ObjectId } = require("mongodb");
 const { getSelectData, getUnselectedData } = require("../../utils/helpers");
-const { model } = require("mongoose");
 
 const findAllDraftsForShop = async ({ query, limit, skip }) => {
   return await queryProduct({ query, limit, skip });
@@ -135,6 +134,21 @@ const getProductById = async (productId) => {
   });
 };
 
+const checkProductByServer = async (products) => {
+  return await Promise.all(
+    products.map(async (product) => {
+      const foundProduct = await getProductById(product.productId);
+      if (foundProduct) {
+        return {
+          price: foundProduct.product_price,
+          quantity: product.quantity,
+          productId: product.productId,
+        };
+      }
+    })
+  );
+};
+
 module.exports = {
   findAllDraftsForShop,
   publishProductByShop,
@@ -145,4 +159,5 @@ module.exports = {
   findProduct,
   updateProductById,
   getProductById,
+  checkProductByServer,
 };
