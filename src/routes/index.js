@@ -3,6 +3,7 @@
 const express = require("express");
 const apiKey = require("../middlewares/apiKeyMiddleware");
 const permission = require("../middlewares/permissionMiddleware");
+const { pushToDiscordLog } = require("../middlewares/loggerMiddleware");
 
 const router = express.Router();
 
@@ -12,6 +13,9 @@ router.get("/", (req, res, next) => {
     message: "Welcome to Backend NodeJS Architecture!",
   });
 });
+
+// add log to discord
+router.use(pushToDiscordLog);
 
 // check api key
 router.use(apiKey);
