@@ -3,10 +3,7 @@
 const express = require("express");
 const apiKey = require("../middlewares/apiKeyMiddleware");
 const permission = require("../middlewares/permissionMiddleware");
-<<<<<<< HEAD
 const { pushToDiscordLog } = require("../middlewares/loggerMiddleware");
-=======
->>>>>>> 305dda835173c4d4c16913722c54e3378fe78d55
 
 const router = express.Router();
 
@@ -17,12 +14,9 @@ router.get("/", (req, res, next) => {
   });
 });
 
-<<<<<<< HEAD
 // add log to discord
 router.use(pushToDiscordLog);
 
-=======
->>>>>>> 305dda835173c4d4c16913722c54e3378fe78d55
 // check api key
 router.use(apiKey);
 
