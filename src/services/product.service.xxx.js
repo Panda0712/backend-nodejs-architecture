@@ -22,6 +22,7 @@ const {
   removeUndefinedObject,
   updateNestedObjectParser,
 } = require("../utils/helpers");
+const { pushNotificationsToSystem } = require("./notification.service");
 
 // define Factory class to create product
 class ProductFactory {
@@ -134,6 +135,19 @@ class Product {
         shopId: this.product_shop,
         stock: this.product_quantity,
       });
+
+    // push notification to system collection
+    pushNotificationsToSystem({
+      type: "SHOP-001",
+      receivedId: 1,
+      senderId: this.product_shop,
+      options: {
+        product_name: this.product_name,
+        product_shop: this.product_shop,
+      },
+    })
+      .then((res) => console.log(res))
+      .catch((error) => console.log(error));
 
     return newProduct;
   }
