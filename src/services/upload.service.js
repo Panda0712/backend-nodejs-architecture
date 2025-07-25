@@ -8,7 +8,8 @@ const {
 } = require("../configs/aws.s3.config");
 const cloudinary = require("../configs/cloudinary.config");
 const crypto = require("crypto");
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+// const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const { getSignedUrl } = require("@aws-sdk/cloudfront-signer"); // ESM
 
 // UPLOAD FILE USING S3 BUCKET
 const uploadImageFromLocalS3 = async ({ file }) => {
@@ -31,10 +32,22 @@ const uploadImageFromLocalS3 = async ({ file }) => {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: imageName,
     });
-    const url = await getSignedUrl(s3, singledUrl, { expiresIn: 3600 });
+
+    // url by s3 request presigner
+    // const url = await getSignedUrl(s3, singledUrl, { expiresIn: 3600 });
+
+    // url by cloudfront by on private and public key
+    const signedUrl = getSignedUrl({
+      url: `${process.env.CLOUDFRONT_DOMAIN}/${imageName}`,
+      keyPairId: process.env.CLOUDFRONT_PUBLIC_KEY_ID,
+      dateLessThan: new Date(Date.now() + 1000 * 60), // 60s
+      privateKey: process.env.CLOUDFRONT_PRIVATE_KEY,
+    });
 
     return {
-      image_url: url,
+      url: `${process.env.CLOUDFRONT_DOMAIN}/${imageName}`,
+      secure_url: signedUrl,
+      result,
     };
   } catch (error) {
     console.error("Error while uploading images to s3 bucket!!!", error);
