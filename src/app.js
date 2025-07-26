@@ -42,28 +42,42 @@ app.use((req, res, next) => {
 });
 
 // test pub sub redis
-async function initRedisPubSub() {
-  try {
-    // Initialize inventory service first (subscriber)
-    const InventoryTestService = require("./tests/inventory.test");
-    new InventoryTestService();
+// async function initRedisPubSub() {
+//   try {
+//     // Initialize inventory service first (subscriber)
+//     const InventoryTestService = require("./tests/inventory.test");
+//     new InventoryTestService();
 
-    // Wait a bit for subscription to be established
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+//     // Wait a bit for subscription to be established
+//     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Then test the product service (publisher)
-    const productTest = require("./tests/product.test");
-    await productTest.purchaseProduct("product:001", 10);
+//     // Then test the product service (publisher)
+//     const productTest = require("./tests/product.test");
+//     await productTest.purchaseProduct("product:001", 10);
 
-    console.log("Redis pub/sub services initialized successfully");
-  } catch (error) {
-    console.error("Error initializing Redis pub/sub services:", error);
-  }
-}
-initRedisPubSub();
+//     console.log("Redis pub/sub services initialized successfully");
+//   } catch (error) {
+//     console.error("Error initializing Redis pub/sub services:", error);
+//   }
+// }
+// initRedisPubSub();
 
 // init database
 require("./db/init.mongodb");
+
+// Initialize Redis asynchronously
+const initializeRedis = async () => {
+  try {
+    const { initRedis } = require("./db/init.redis");
+    await initRedis();
+  } catch (error) {
+    console.error("Failed to initialize Redis:", error);
+  }
+};
+
+// Call Redis initialization
+initializeRedis();
+
 countConnect();
 // checkOverload();
 
