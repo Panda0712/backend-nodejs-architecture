@@ -40,10 +40,21 @@ const updateNestedObjectParser = (obj) => {
   return final;
 };
 
+// {{lastname}} or {{verifykey}}
+const replacePlaceholder = (template, params) => {
+  Object.keys(params).forEach((k) => {
+    const placeholder = `{{${k}}}`; // e.g., {{verifykey}}
+    template = template.replace(new RegExp(placeholder, "g"), params[k]);
+  });
+
+  return template;
+};
+
 module.exports = {
   getInfoData,
   getSelectData,
   getUnselectedData,
   removeUndefinedObject,
   updateNestedObjectParser,
+  replacePlaceholder,
 };

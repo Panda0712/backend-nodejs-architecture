@@ -3,6 +3,8 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
 const { countConnect, checkOverload } = require("./helpers/check.connect");
+const { v4: uuidV4 } = require("uuid");
+const myLogger = require("./loggers/mylogger.log");
 
 const app = express();
 
@@ -23,6 +25,21 @@ app.use(
 // app.use(morgan("common"));
 // app.use(morgan("short"));
 // app.use(morgan("tiny"));
+
+app.use((req, res, next) => {
+  const requestId = req.headers["x-request-id"];
+  req.requestId = requestId ? requestId : uuidV4();
+
+  myLogger.log(`input params ::${req.method}::`, [
+    req.path,
+    {
+      requestId: req.requestId,
+      ...(req.method === "POST" ? req.body : req.query),
+    },
+  ]);
+
+  next();
+});
 
 // test pub sub redis
 async function initRedisPubSub() {
@@ -61,6 +78,14 @@ app.use((req, res, next) => {
 });
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
+  const resMessage = `${err.status} - ${
+    Date.now
+  }ms - Response: ${JSON.stringify(err)}`;
+  myLogger.error(resMessage, [
+    req.path,
+    { requestId: req.requestId },
+    { message: err.message },
+  ]);
   return res.status(statusCode).json({
     status: "error",
     code: statusCode,
