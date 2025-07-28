@@ -3,16 +3,18 @@
 const { Schema, model } = require("mongoose");
 const slugify = require("slugify");
 
-const DOCUMENT_NAME = "Product";
-const COLLECTION_NAME = "Products";
+const DOCUMENT_NAME = "Spu";
+const COLLECTION_NAME = "Spus";
 
 const productSchema = new Schema(
   {
+    product_id: { type: String, default: "" },
     product_name: { type: String, required: true },
     product_thumb: { type: String, required: true },
     product_description: String,
     product_slug: String,
     product_price: { type: Number, required: true },
+    product_category: { type: Array, default: [] },
     product_quantity: { type: Number, required: true },
     product_type: {
       type: String,
@@ -44,6 +46,7 @@ const productSchema = new Schema(
       index: true,
       select: false,
     },
+    isDeleted: { type: Boolean, default: false },
   },
   {
     collection: COLLECTION_NAME,
@@ -60,54 +63,4 @@ productSchema.pre("save", function (next) {
   next();
 });
 
-// define the product type as clothing
-
-// const clothingSchema = new Schema(
-//   {
-//     brand: { type: String, require: true },
-//     size: String,
-//     material: String,
-//     product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
-//   },
-//   {
-//     collection: "clothes",
-//     timestamps: true,
-//   }
-// );
-
-// define the product type = electronic
-
-// const electronicSchema = new Schema(
-//   {
-//     manufacturer: { type: String, require: true },
-//     model: String,
-//     color: String,
-//     product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
-//   },
-//   {
-//     collection: "electronics",
-//     timestamps: true,
-//   }
-// );
-
-// define the product type as furniture
-
-// const furnitureSchema = new Schema(
-//   {
-//     brand: { type: String, require: true },
-//     size: String,
-//     material: String,
-//     product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
-//   },
-//   {
-//     collection: "furniture",
-//     timestamps: true,
-//   }
-// );
-
-module.exports = {
-  product: model(DOCUMENT_NAME, productSchema),
-  // electronic: model("Electronic", electronicSchema),
-  // clothing: model("Clothing", clothingSchema),
-  // furniture: model("Furniture", furnitureSchema),
-};
+module.exports = model(DOCUMENT_NAME, productSchema);

@@ -18,7 +18,21 @@ const newOtp = async ({ email = null }) => {
   return newToken;
 };
 
+const checkEmailToken = async ({ token }) => {
+  // check token in model otp
+  const hasToken = await OTP.findOne({
+    otp_token: token,
+  });
+  if (!hasToken) throw new Error("token not found!");
+
+  // delete token from model
+  OTP.deleteOne({ otp_token: token }).lean();
+
+  return token;
+};
+
 module.exports = {
   generateTokenRandom,
+  checkEmailToken,
   newOtp,
 };

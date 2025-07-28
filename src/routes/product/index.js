@@ -12,6 +12,8 @@ router.get(
   "/search/:keySearch",
   asyncHandler(productController.searchProductByUser)
 );
+router.get("/sku", asyncHandler(productController.findOneSku));
+router.get("/spu", asyncHandler(productController.findOneSpu));
 router.get("/", asyncHandler(productController.findAllProducts));
 router.get("/:productId", asyncHandler(productController.findProduct));
 
@@ -20,6 +22,7 @@ router.use(authenticationV2);
 
 // create product
 router.post("/", asyncHandler(productController.createProduct));
+router.post("/new_spu", asyncHandler(productController.createSpu));
 router.post(
   "/:productId",
   asyncHandler(productController.publishedProductForShop)

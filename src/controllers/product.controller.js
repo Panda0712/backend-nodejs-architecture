@@ -1,9 +1,50 @@
 "use strict";
 
 const ProductService = require("../services/product.service.xxx");
+const { oneSku } = require("../services/sku.service");
+const { newSpu, oneSpu } = require("../services/spu.service");
 const { SuccessResponse } = require("../utils/apiSuccess");
 
 class ProductController {
+  findOneSpu = async (req, res, next) => {
+    try {
+      const { product_id } = req.query;
+      new SuccessResponse({
+        message: "product one",
+        metadata: await oneSpu({ spu_id: product_id }),
+      }).send(res);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  findOneSku = async (req, res, next) => {
+    try {
+      const { sku_id, product_id } = req.query;
+      new SuccessResponse({
+        message: "Get sku one",
+        metadata: await oneSku({ sku_id, product_id }),
+      }).send(res);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  createSpu = async (req, res, next) => {
+    try {
+      const spu = await newSpu({
+        ...req.body,
+        product_shop: req.user.shopId,
+      });
+      new SuccessResponse({
+        message: "Success created spu",
+        metadata: spu,
+      }).send(res);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   createProduct = async (req, res, next) => {
     new SuccessResponse({
       message: "Created new product successfully!",

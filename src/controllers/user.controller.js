@@ -1,6 +1,6 @@
 "use strict";
 
-const { newUser } = require("../services/user.service");
+const { newUser, checkLoginEmailToken } = require("../services/user.service");
 const { SuccessResponse } = require("../utils/apiSuccess");
 
 class UserController {
@@ -14,7 +14,13 @@ class UserController {
   };
 
   // check user token via email
-  checkRegisterEmailToken = async (req, res, next) => {};
+  checkRegisterEmailToken = async (req, res, next) => {
+    const { token = null } = req.query;
+    const response = await checkLoginEmailToken({
+      token,
+    });
+    new SuccessResponse(response).send(res);
+  };
 }
 
 module.exports = new UserController();
