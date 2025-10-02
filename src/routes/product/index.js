@@ -4,6 +4,7 @@ const express = require("express");
 const { asyncHandler } = require("../../helpers/asyncHandler");
 const productController = require("../../controllers/product.controller");
 const { authenticationV2 } = require("../../middlewares/authMiddleware");
+const { readCache } = require("../../middlewares/cache.middleware");
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ router.get(
   "/search/:keySearch",
   asyncHandler(productController.searchProductByUser)
 );
-router.get("/sku", asyncHandler(productController.findOneSku));
+router.get("/sku", readCache, asyncHandler(productController.findOneSku));
 router.get("/spu", asyncHandler(productController.findOneSpu));
 router.get("/", asyncHandler(productController.findAllProducts));
 router.get("/:productId", asyncHandler(productController.findProduct));

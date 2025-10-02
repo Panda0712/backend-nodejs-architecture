@@ -12,7 +12,12 @@ const HEADER = {
   REFRESH_TOKEN: "refresh-token",
 };
 
+const CACHE_PRODUCT = {
+  SKU: "sku-k-",
+};
+
 module.exports = {
   SHOP_ROLES,
   HEADER,
+  CACHE_PRODUCT,
 };

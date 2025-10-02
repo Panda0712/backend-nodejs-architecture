@@ -3,6 +3,11 @@
 const _ = require("lodash");
 const SKU = require("../models/sku.model");
 const { randomProductId } = require("../utils/helpers");
+const { CACHE_PRODUCT } = require("../utils/constants");
+const {
+  getCacheIO,
+  setCacheIOExpiration,
+} = require("../models/repositories/cache.repo");
 
 const newSku = async ({ spu_id, sku_list }) => {
   try {
@@ -23,17 +28,42 @@ const newSku = async ({ spu_id, sku_list }) => {
 
 const oneSku = async ({ sku_id, product_id }) => {
   try {
+    // check params
+    if (sku_id < 0) return null;
+    if (product_id < 0) return null;
+
     // read cache
-    const sku = await SKU.findOne({
+    const skuKeyCache = `${CACHE_PRODUCT.SKU}${sku_id}`;
+    // let skuCache = await getCacheIO({
+    //   key: skuKeyCache,
+    // });
+    // if (skuCache) {
+    //   return {
+    //     ...JSON.parse(skuCache),
+    //     toLoad: "cache",
+    //   };
+    // }
+
+    // read from dbs
+    // if (!skuCache) {
+    const skuCache = await SKU.findOne({
       sku_id,
       product_id,
     }).lean();
 
-    if (sku) {
-      // set cached
-    }
+    const valueCache = skuCache ? skuCache : null;
 
-    return _.omit(sku, ["__v", "updatedAt", "createdAt", "isDeleted"]);
+    setCacheIOExpiration({
+      key: skuKeyCache,
+      value: JSON.stringify(valueCache),
+      expirationInSeconds: 30,
+    }).then();
+    // }
+
+    return {
+      skuCache,
+      toLoad: "dbs",
+    };
   } catch (error) {
     return null;
   }

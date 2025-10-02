@@ -78,6 +78,18 @@ const initializeRedis = async () => {
 // Call Redis initialization
 initializeRedis();
 
+// init elastic search
+const initElasticSearch = require("./db/init.elasticsearch");
+initElasticSearch.initElastic({
+  ELASTICSEARCH_IS_ENABLED: true,
+});
+
+// ioredis
+const ioRedis = require("./db/init.ioredis");
+ioRedis.initIoRedis({
+  IOREDIS_IS_ENABLED: true,
+});
+
 countConnect();
 // checkOverload();
 
